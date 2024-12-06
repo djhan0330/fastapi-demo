@@ -12,8 +12,18 @@ import MySQLdb
 from chalice import Chalice
 import boto3
 
-app = Chalice(app_name="main.py")
-app.debug = True
+# app = Chalice(app_name="main.py")
+# app.debug = True
+
+
+app = FastAPI()
+from fastapi.middleware.cors import CORSMiddleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 S3_BUCKET = 'dpv8cf-dp1-spotify'
 s3=boto3.client('s3')
@@ -25,15 +35,6 @@ DB = "dpv8cf"
 
 db = mysql.connector.connect(user=DBUSER, host=DBHOST, password=DBPASS, database=DB)
 cur=db.cursor()
-
-app = FastAPI()
-from fastapi.middleware.cors import CORSMiddleware
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
 @app.get("/")  # zone apex
 def zone_apex():
